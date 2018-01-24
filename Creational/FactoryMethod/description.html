@@ -1,0 +1,21 @@
+<p>
+    <b>When to Use the Factory Method</b>
+  In part, design patterns are selected based on what you want to be able to change. In
+  Chapter 3, Table 3-1 shows that the Factory Method should be used when the subclass
+  of an object instantiated can vary. In the examples in this chapter, all of the subclasses
+  of the Project interface vary; they are different countries. As you will see, the projects
+  developed are objects made up of text (write-ups) and graphics (maps). At the outset,
+  we assume that the developer does not know how many countries there will be. In other
+  words, the number and types of objects are unknown. A class cannot anticipate the
+  number of objects it must create, and so you do not want the class tightly bound to the
+  classes it may have to create.
+  If a class has a finite and known number of objects it must create, the class can be built
+  so that the finite number of objects can be created in a predictable manner. For example,
+  if you are making a world map application with separate objects for the seven continents,
+  you can be fairly certain that they are not going to vary. On the other hand, if you are
+  creating a site for different species of insects, you can be fairly certain that new ones will
+  be discovered, change, and become extinct over a relatively short period of time. A
+  programming product to deal with that kind of variation needs to have a good deal of
+  flexibility built into it. This is the kind of project where you would want to consider
+  using a Factory Method design.
+</p>
