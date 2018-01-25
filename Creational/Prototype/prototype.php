@@ -1,76 +1,160 @@
 <?php
-  //IPrototype.php
-  abstract class IPrototype {
-    public $eyeColor;
-    public $wingBeat;
-    public $unitEyes;
-    abstract function __clone();
-  }
-  //MaleProto.php
-  // include_once('IPrototype.php');
-  class MaleProto extends IPrototype {
-     const gender = "MALE";
-     public $mated;
-     public function __construct() {
-       $this->eyeColor = "red";
-       $this->wingBeat = "220";
-       $this->unitEyes = "760 ";
+  //IAcmePrototype.php
+  abstract class IAcmePrototype {
+     protected $name;
+     protected $id;
+     protected $employeePic;
+     protected $dept;
+     //Dept
+     abstract function setDept($orgCode);
+     abstract function getDept();
+     //Name
+     public function setName($emName) {
+       $this->name = $emName;
      }
-     function __clone(){}
-  }
-  //FemaleProto.php
-  // include_once('IPrototype.php');
-  class FemaleProto extends IPrototype {
-     const gender = "FEMALE";
-     public $fecundity;
-     public function __construct() {
-       $this->eyeColor = "red";
-       $this->wingBeat = "220";
-       $this->unitEyes = "760 ";
+     public function getName() {
+       return $this->name;
      }
-     function __clone(){}
-  }
-
-  class Client {
-   //For direct instantiation
-   private $fly1;
-   private $fly2;
-   //For cloning
-   private $c1Fly;
-   private $c2Fly;
-   private $updatedCloneFly;
-   public function __construct() {
-       //Instantiate
-       $this->fly1=new MaleProto();
-       $this->fly2=new FemaleProto();
-       //Clone
-       $this->c1Fly = clone $this->fly1;
-       $this->c2Fly = clone $this->fly2;
-       $this->updatedCloneFly = clone $this->fly2;
-       //update clones
-       $this->c1Fly->mated="true";
-       $this->c2Fly->fecundity="186";
-       $this->updatedCloneFly->eyeColor="purple";
-       $this->updatedCloneFly->wingBeat="220";
-       $this->updatedCloneFly->unitEyes="750";
-       $this->updatedCloneFly->fecundity="92";
-       //Send through type hinting method
-       $this->showFly($this->c1Fly);
-       $this->showFly($this->c2Fly);
-       $this->showFly($this->updatedCloneFly);
+     //ID
+     public function setId($emId) {
+       $this->id = $emId;
      }
-     private function showFly(IPrototype $fly) {
-       echo "Eye color: " . $fly->eyeColor . "<br/>";
-       echo "Wing Beats/second: " . $fly->wingBeat . "<br/>";
-       echo "Eye units: " . $fly->unitEyes . "<br/>";
-       $genderNow=$fly::gender;
-       echo "Gender: " . $genderNow . "<br/>";
-       if($genderNow=="FEMALE") {
-         echo "Number of eggs: " . $fly->fecundity . "<p/>";
-       }else{
-         echo "Mated: " . $fly->mated . "<p/>";
+     public function getId() {
+       return $this->id;
+     }
+     //Employee Picture
+     public function setPic($ePic) {
+       $this->employeePic = $ePic;
+     }
+     public function getPic() {
+       return $this->employeePic;
+     }
+     abstract function __clone();
+  }
+  //Marketing.php
+  // include_once('IAcmePrototype.php');
+  class Marketing extends IAcmePrototype {
+     const UNIT = "Marketing";
+     private $sales = "sales";
+     private $promotion = "promotion";
+     private $strategic = "strategic planning";
+     public function setDept($orgCode) {
+       switch($orgCode) {
+         case 101:
+           $this->dept=$this->sales;
+           break;
+         case 102:
+           $this->dept=$this->promotion;
+           break;
+         case 103:
+           $this->dept=$this->strategic;
+           break;
+         default:
+          $this->dept="Unrecognized Marketing ";
        }
      }
-   }
+     public function getDept() {
+       return $this->dept;
+     }
+     function __clone(){}
+  }
+  //  Management.php
+  //  include_once('IAcmePrototype.php');
+  class Management extends IAcmePrototype {
+     const UNIT="Management";
+     private $research="research";
+     private $plan="planning";
+     private $operations="operations";
+     public function setDept($orgCode) {
+       switch($orgCode) {
+         case 201:
+          $this->dept=$this->research;
+          break;
+         case 202:
+           $this->dept=$this->plan;
+           break;
+         case 203:
+           $this->dept=$this->operations;
+           break;
+         default:
+          $this->dept="Unrecognized Management";
+       }
+     }
+     public function getDept() {
+       return $this->dept;
+     }
+     function __clone(){}
+  }
 
-$worker=new Client();
+  //  Engineering.php
+  //  include_once('IAcmePrototype.php');
+  class Engineering extends IAcmePrototype {
+     const UNIT="Engineering";
+     private $development="programming";
+     private $design="digital artwork";
+     private $sysAd="system administration";
+     public function setDept($orgCode) {
+       switch($orgCode) {
+         case 301:
+           $this->dept=$this->development;
+           break;
+         case 302:
+           $this->dept=$this->design;
+           break;
+         case 303:
+           $this->dept=$this->sysAd;
+           break;
+         default:
+          $this->dept="Unrecognized Engineering";
+       }
+     }
+     public function getDept() {
+     return $this->dept;
+     }
+     function __clone(){}
+  }
+
+  //Client.php
+  class Client {
+     private $market;
+     private $manage;
+     private $engineer;
+     public function __construct() {
+       $this->makeConProto();
+       $Tess = clone $this->market;
+       $this->setEmployee($Tess,"Tess Smith",101,"ts101-1234","tess.png");
+       $this->showEmployee($Tess);
+       $Jacob = clone $this->market;
+       $this->setEmployee($Jacob,"Jacob Jones",102,"jj101-2234","jacob.png");
+       $this->showEmployee($Jacob);
+       $Ricky = clone $this->manage;
+       $this->setEmployee($Ricky,"Ricky Rodriguez",203,"rr203-5634","ricky.png");
+       $this->showEmployee($Ricky);
+       $Olivia = clone $this->engineer;
+       $this->setEmployee($Olivia,"Olivia Perez",302,"op301-1278","olivia.png");
+       $this->showEmployee($Olivia);
+       $John = clone $this->engineer;
+       $this->setEmployee($John,"John Jackson",301,"jj302-1454","john.png");
+       $this->showEmployee($John);
+     }
+     private function makeConProto() {
+       $this->market = new Marketing();
+       $this->manage = new Management();
+       $this->engineer = new Engineering();
+     }
+     private function showEmployee(IAcmePrototype $employeeNow) {
+       $px = $employeeNow->getPic();
+       echo "<img src=$px width='150' height='150'><br/>";
+       echo $employeeNow->getName() . "<br/>";
+       echo $employeeNow->getDept() . ": " . $employeeNow::UNIT . "<br/>";
+       echo $employeeNow->getID() . "<p/>";
+     }
+     private function setEmployee(IAcmePrototype $employeeNow,$nm,$dp,$id,$px) {
+       $employeeNow->setName($nm);
+       $employeeNow->setDept($dp);
+       $employeeNow->setID($id);
+       $employeeNow->setPic("pix/$px");
+     }
+  }
+
+  $worker = new Client();
