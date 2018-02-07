@@ -2,93 +2,171 @@
   //IComponent.php
   //Component interface
   abstract class IComponent {
-    protected $site;
-    abstract public function getSite();
-    abstract public function getPrice();
-  }
-  //Decorator.php
-  //Decorator participant is for keeping a link to the component interface
-  abstract class Decorator extends IComponent {
-     //Inherits both getSite() and getPrice()
-     //This is still an abstract class and there's
-     //no need to implement either abstract method here
-     //Job is to maintain reference to Component
-     //public function getSite() { }
-     //public function getPrice() { }
-  }
-  //BasicSite.php
-  //Concrete Component
-  class BasicSite extends IComponent {
-     public function __construct() {
-       $this->site = "Basic Site";
-     }
-     public function getSite() {
-       return $this->site;
-     }
-     public function getPrice() {
-       return 1200;
-     }
-  }
-  //Maintenance.php
-  //Concrete decorator
-  class Maintenance extends Decorator {
-     public function __construct(IComponent $siteNow) {
-       $this->site = $siteNow;
-     }
-     public function getSite() {
-       $fmat = "<br/>&nbsp;&nbsp; Maintenance ";
-       return $this->site->getSite() . $fmat;
-     }
-     public function getPrice() {
-       return 950 + $this->site->getPrice();
-     }
-    }
-    //Video.php
-    //Concrete decorator
-    class Video extends IComponent {
-     public function __construct(IComponent $siteNow) {
-       $this->site = $siteNow;
-     }
-     public function getSite() {
-       $fmat="<br/>&nbsp;&nbsp; Video ";
-       return $this->site->getSite() . $fmat;
-     }
-     public function getPrice() {
-       return 350 + $this->site->getPrice();
-     }
-    }
-    //DataBase.php
-    //Concrete decorator
-    class DataBase extends Decorator {
-     public function __construct(IComponent $siteNow) {
-       $this->site = $siteNow;
-     }
-     public function getSite() {
-       $fmat="<br/>&nbsp;&nbsp; MySQL Database ";
-       return $this->site->getSite() . $fmat;
-     }
-     public function getPrice() {
-       return 800 + $this->site->getPrice();
-     }
-    }
+    protected $date;
+    protected $ageGroup;
+    protected $feature;
 
-    class Client {
-     private $basicSite;
+    abstract public function setAge($ageNow);
+    abstract public function getAge();
+    abstract public function getFeature();
+    abstract public function setFeature($fea);
+  }
+
+  //Male.php
+  //Male Concrete Component
+  class Male extends IComponent {
      public function __construct() {
-       $this->basicSite = new BasicSite();
-       $this->basicSite = $this->wrapComponent($this->basicSite);
-       $siteShow = $this->basicSite->getSite();
-       $format = "<br/>&nbsp;&nbsp;<strong>Total= $";
-       $price = $this->basicSite->getPrice();
-       echo $siteShow . $format . $price . "</strong><p/>";
+       $this->date = "Male";
+       $this->setFeature("<br/>Dude programmer features: ");
+     }
+     public function getAge() {
+       return $this->ageGroup;
+     }
+     public function setAge($ageNow) {
+       $this->ageGroup=$ageNow;
+     }
+     public function getFeature() {
+       return $this->feature;
+     }
+     public function setFeature($fea) {
+       $this->feature = $fea;
+     }
+  }
+
+  //Female.php
+  //Female Concrete Component
+  class Female extends IComponent {
+     public function __construct() {
+       $this->date = "Female";
+       $this->setFeature("<br />Grrrl programmer features: ");
+     }
+     public function getAge() {
+       return $this->ageGroup;
+     }
+     public function setAge($ageNow) {
+       $this->ageGroup = $ageNow;
+     }
+     public function getFeature() {
+       return $this->feature;
+     }
+     public function setFeature($fea) {
+       $this->feature = $fea;
+     }
+  }
+
+  //Decorator.php
+  //Decorator participant
+  abstract class Decorator extends IComponent {
+     public function setAge($ageNow) {
+       $this->ageGroup = $this->ageGroup;
+     }
+     public function getAge() {
+       return $this->ageGroup;
+     }
+  }
+  //ProgramLang.php
+  //Concrete decorator
+  class ProgramLang extends Decorator {
+
+     private $languageNow;
+
+     private $language=array(
+       "php"=>"PHP",
+       "cs"=>"C#",
+       "js"=>"JavaScript",
+       "as3"=>"ActionScript 3.0"
+     );
+
+     public function __construct(IComponent $dateNow) {
+       $this->date = $dateNow;
+     }
+     public function setFeature($lan) {
+       $this->languageNow = $this->language[$lan];
+     }
+     public function getFeature() {
+       $output = $this->date->getFeature();
+       $fmat = "<br/>&nbsp;&nbsp;";
+       $output .= "$fmat Preferred programming language: ";
+       $output .= $this->languageNow;
+       return $output;
+     }
+  }
+  //Hardware.php
+  //Concrete decorator
+  class Hardware extends Decorator {
+
+     private $hardwareNow;
+     private $box = array(
+       "mac"=>"Macintosh",
+       "dell"=>"Dell",
+       "hp"=>"Hewlett-Packard",
+       "lin"=>"Linux"
+     );
+     public function __construct(IComponent $dateNow) {
+       $this->date = $dateNow;
+     }
+     public function setFeature($hdw) {
+       $this->hardwareNow = $this->box[$hdw];
+     }
+     public function getFeature() {
+       $output = $this->date->getFeature();
+       $fmat = "<br/>&nbsp;&nbsp;";
+       $output .= "$fmat Current Hardware: ";
+       $output .= $this->hardwareNow;
+       return $output;
+     }
+  }
+  //Food.php
+  //Concrete decorator
+  class Food extends Decorator {
+     private $chowNow;
+     public function __construct(IComponent $dateNow) {
+       $this->date = $dateNow;
+     }
+     private $snacks=array(
+       "piz"=>"Pizza",
+       "burg"=>"Burgers",
+       "nach"=>"Nachos",
+       "veg"=>"Veggies"
+     );
+     public function setFeature($yum) {
+       $this->chowNow = $this->snacks[$yum];
+     }
+     public function getFeature() {
+       $output = $this->date->getFeature();
+       $fmat = "<br/>&nbsp;&nbsp;";
+       $output .="$fmat Favorite food: ";
+       $output .= $this->chowNow . "<br/>";
+       return $output;
+     }
+  }
+
+  //Client.php
+  /*Age groups:
+   18-29: Group 1
+   30-39: Group 2
+   40-49: Group 3
+   50+ : Group 4
+  */
+  class Client {
+     //$hotDate is component instance
+     private $hotDate;
+     public function __construct() {
+       $this->hotDate = new Female();
+       $this->hotDate->setAge("Age Group 4");
+       echo $this->hotDate->getAge();
+       $this->hotDate = $this->wrapComponent($this->hotDate);
+       echo $this->hotDate->getFeature();
      }
      private function wrapComponent(IComponent $component) {
-       $component = new Maintenance($component);
-       $component = new Video($component);
-       $component = new DataBase($component);
+       $component = new ProgramLang($component);
+       $component->setFeature("php");
+       $component = new Hardware($component);
+       $component->setFeature("lin");
+       $component = new Food($component);
+       $component->setFeature("veg");
        return $component;
      }
-    }
+  }
 
-    $worker = new Client();
-    //151
+  $worker = new Client();
